@@ -247,16 +247,13 @@
       inset: 0;
       background: rgba(2, 6, 23, 0.75);
       backdrop-filter: blur(8px);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
       z-index: 50;
     }
-    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-backdrop.open { display: flex; }
     .modal-box {
       background: #0f172a;
       border: 1px solid rgba(96, 165, 250, 0.35);
@@ -264,11 +261,8 @@
       padding: 24px;
       width: 100%;
       max-width: 400px;
-      transform: translateY(16px) scale(0.96);
-      transition: transform 0.25s ease;
       box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     }
-    .modal-backdrop.open .modal-box { transform: translateY(0) scale(1); }
     .modal-box h3 { font-size: 20px; margin-bottom: 14px; }
     .modal-box input {
       width: 100%;
@@ -316,7 +310,7 @@
       <div class="orbit-stage" id="orbit-stage">
         <div class="orbit-ring"></div>
         <div id="satellites-layer"></div>
-        <button class="core-btn" id="open-modal-btn">Создать<br>ссылку</button>
+        <button type="button" class="core-btn" onclick="openModal()">Создать<br>ссылку</button>
       </div>
     </section>
 
@@ -329,17 +323,22 @@
   </main>
 
   <nav>
-    <button class="nav-btn active" data-target="tab-home">Главная</button>
-    <button class="nav-btn" data-target="tab-links">Ссылки</button>
+    <button type="button" class="nav-btn active" id="btn-home" onclick="switchTab('home')">Главная</button>
+    <button type="button" class="nav-btn" id="btn-links" onclick="switchTab('links')">Ссылки</button>
   </nav>
 
-  <div class="modal-backdrop" id="modal">
+  <div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-box">
       <h3>Новая ссылка</h3>
       <input type="text" id="url-input" placeholder="Ссылка (например: youtube.com)" autocomplete="off" />
       <input type="text" id="title-input" placeholder="Название (необязательно)" autocomplete="off" />
       <div class="modal-actions">
-        <button class="btn-cancel" id="close-modal-btn">Отмена</button>
-        <button class="btn-save" id="save-link-btn">Запустить</button>
+        <button type="button" class="btn-cancel" onclick="closeModal()">Отмена</button>
+        <button type="button" class="btn-save" onclick="addLink()">Запустить</button>
       </div>
     </div>
+  </div>
+
+  <script>
+    let links = JSON.parse(localStorage.getItem('link_hub_items') || '[]');
+
